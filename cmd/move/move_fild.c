@@ -1,7 +1,7 @@
-// движение
+// движение в поле (fild)
 /*
-       gcc move.c -o move -lglut -lGL -lm
-       ./move
+       gcc move_fild.c -o move_fild -lglut -lGL -lm
+       ./move_fild
 */
 
 #include <GL/glut.h>
@@ -33,6 +33,12 @@ float a = 0.0f;      // ускорение
 float stop = 0;      // остановка
 
 char numbers[][2] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+
+//int fild[1800][400]; // поле размерности окна
+float xCoord = 0;
+float yCoord = 0;
+int xfild = 0;
+int yfild = 0;
 
 // вывод текста
 void DrawText(const char *text, int length, int x, int y)
@@ -76,6 +82,14 @@ char *PrintText(float d) {
     return msg;
 }
 
+// d = от -1 до 1; base = Width или Height;
+// преобразуем координату из формата float 0,1 в int 150
+float convertCoord(float d, float base) {
+    float res;
+    res = (1 + d) * base / 2;
+    return res;
+}
+
 /* управляет всем выводом на экран */
 void Display(void)
 {
@@ -104,6 +118,29 @@ void Display(void)
 
      char *infoMsg = {"q, a - speedup;   w, s - speed;   space bar - stop;  esc - exit"};
      DrawText(infoMsg, 63, 20, 20);
+
+
+//     xfild = (int)xCoord;
+//     yfild = (int)yCoord;
+//     fild[xfild][yfild] = 0;
+
+     char *xMsg = {"x = "};
+     DrawText(xMsg, 4, 38, 370);
+
+     xCoord = convertCoord(xq1, Width);
+     char *msgX = PrintText(xCoord);
+     DrawText(msgX, 4, 45, 370);
+
+     char *yMsg = {"y = "};
+     DrawText(yMsg, 4, 38, 350);
+
+     yCoord = convertCoord(yq1, Height);
+     char *msgY = PrintText(yCoord);
+     DrawText(msgY, 4, 45, 350);
+
+//     xfild = (int)xCoord;
+//     yfild = (int)yCoord;
+//     fild[xfild][yfild] = 1;
 
      glutSwapBuffers();
 }
@@ -153,7 +190,7 @@ void StopFunc(){
 }
 
 void TimerFunction(int value){
-     if (xq1 > winX - xsize || xq1 < -winX)   vector = -vector;
+     if (xq1 > winX - xsize || xq1 < -winX + Width/1000000)   vector = -vector;
 
      if (stop == 1) {
        StopFunc();
